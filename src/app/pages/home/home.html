@@ -1,0 +1,41 @@
+<div class="shell">
+  <header class="head">
+    <h1>Amaz — console opérateur</h1>
+    <p>
+      Cette application Angular sert de <strong>point d’entrée</strong> : la gestion des données
+      (utilisateurs, vendeurs, commandes, sécurité, catalogue Mongo en lecture seule) se fait dans
+      <strong>AdminJS</strong>, démarré par <code>admin-service</code>.
+    </p>
+  </header>
+
+  <section class="cards">
+    <article class="card primary">
+      <h2>AdminJS (PostgreSQL + Mongo optionnel)</h2>
+      <p>Ouvre le panneau d’administration sur le port 3010.</p>
+      <a class="btn" [href]="env.adminJsUrl" target="_blank" rel="noopener">Ouvrir AdminJS</a>
+      <p class="hint">{{ env.adminJsUrl }}</p>
+    </article>
+
+    <article class="card">
+      <h2>Santé de la plateforme</h2>
+      <p>État agrégé gateway + microservices (JSON).</p>
+      <button type="button" class="btn secondary" (click)="open(env.gatewayOrigin + '/health/aggregate')">
+        Health agrégé
+      </button>
+      <p class="hint">{{ env.gatewayOrigin }}/health/aggregate</p>
+    </article>
+
+    <article class="card">
+      <h2>Documentation</h2>
+      <p>Runbook : gouvernance vendeurs, secrets, Mongo read-only.</p>
+      <button type="button" class="btn secondary" (click)="open(env.adminRunbookUrl)">ADMIN_RUNBOOK</button>
+    </article>
+  </section>
+
+  <footer class="foot">
+    <p>
+      Pour le développement : démarrer <code>admin-service</code>, la gateway, Postgres, Mongo (si
+      catalogue), puis vous connecter à AdminJS avec un compte <code>role=admin</code>.
+    </p>
+  </footer>
+</div>

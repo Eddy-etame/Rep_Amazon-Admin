@@ -1,0 +1,99 @@
+.shell {
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 3rem;
+  font-family: system-ui, sans-serif;
+  color: #1a1a1a;
+}
+
+.head h1 {
+  font-size: 1.75rem;
+  font-weight: 650;
+  margin: 0 0 0.75rem;
+}
+
+.head p {
+  margin: 0;
+  line-height: 1.55;
+  color: #444;
+}
+
+.cards {
+  display: grid;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+@media (min-width: 640px) {
+  .cards {
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  }
+}
+
+.card {
+  border: 1px solid #e2e2e2;
+  border-radius: 10px;
+  padding: 1.25rem;
+  background: #fafafa;
+}
+
+.card.primary {
+  grid-column: 1 / -1;
+  background: #f0f4ff;
+  border-color: #c8d4f8;
+}
+
+.card h2 {
+  font-size: 1.05rem;
+  margin: 0 0 0.5rem;
+}
+
+.card p {
+  margin: 0 0 1rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #444;
+}
+
+.hint {
+  margin: 0.75rem 0 0 !important;
+  font-size: 0.75rem !important;
+  color: #666 !important;
+  word-break: break-all;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  background: #2563eb;
+  color: #fff !important;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.btn.secondary {
+  background: #fff;
+  color: #1a1a1a !important;
+  border: 1px solid #ccc;
+}
+
+.foot {
+  margin-top: 2.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #e5e5e5;
+  font-size: 0.85rem;
+  color: #555;
+  line-height: 1.5;
+}
+
+code {
+  font-size: 0.88em;
+  background: #eee;
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+}
