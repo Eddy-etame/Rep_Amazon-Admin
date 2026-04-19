@@ -1,0 +1,136 @@
+<div class="shell">
+  <header class="head">
+    <h1>Amaz — console opérateur</h1>
+    <p>
+      Point d'entrée pour la supervision : la santé de la plateforme et d'
+      <strong>admin-service</strong> sont relues automatiquement toutes les
+      <strong>2 minutes</strong> (et au chargement). La gestion des données se fait dans
+      <strong>AdminJS</strong> une fois le service démarré.
+    </p>
+  </header>
+
+  <section class="health-panel" aria-live="polite">
+    <div class="health-panel__row">
+      <h2 class="health-panel__title">État en temps quasi réel</h2>
+      <div class="health-panel__actions">
+        <button
+          type="button"
+          class="btn secondary btn--sm"
+          (click)="refreshHealth()"
+          [disabled]="checking"
+        >
+          {{ checking ? 'Vérification…' : 'Rafraîchir maintenant' }}
+        </button>
+      </div>
+    </div>
+    @if (lastCheckAt) {
+      <p class="health-panel__meta">Dernière vérification : {{ lastCheckAt | date : 'medium' }}</p>
+    }
+    @if (!lastCheckAt && !checking) {
+      <p class="health-panel__meta muted">En attente de la première vérification…</p>
+    }
+
+    <div class="health-grid">
+      <article class="health-card">
+        <h3>Admin service / AdminJS</h3>
+        <p class="health-card__url">{{ env.adminServiceOrigin }}/health</p>
+        <span
+          class="badge"
+          [class.badge--ok]="adminJsReachable()"
+          [class.badge--fail]="!adminJsReachable()"
+        >
+          {{ adminJsReachable() ? 'OK' : 'Indisponible' }}
+        </span>
+        @if (adminError) {
+          <p class="health-card__hint">{{ adminError }}</p>
+        }
+        @if (adminJsReachable()) {
+          <p class="health-card__hint success">
+            Ouvrir le panneau :
+            <a [href]="env.adminJsUrl" target="_blank" rel="noopener">{{ env.adminJsUrl }}</a>
+          </p>
+        }
+      </article>
+
+      <article class="health-card health-card--wide">
+        <h3>Plateforme (gateway + microservices)</h3>
+        <p class="health-card__url">{{ env.gatewayOrigin }}/health/aggregate</p>
+        <span
+          class="badge"
+          [class.badge--ok]="platformOverallOk() && !aggregateError"
+          [class.badge--warn]="aggregate && !platformOverallOk()"
+          [class.badge--fail]="!!aggregateError"
+        >
+          {{
+            aggregateError
+              ? 'Erreur'
+              : platformOverallOk()
+                ? 'Tout vert'
+                : 'À surveiller'
+          }}
+        </span>
+        @if (aggregateError) {
+          <p class="health-card__hint">{{ aggregateError }}</p>
+        }
+
+        @if (serviceEntries().length) {
+          <ul class="svc-list">
+            @for (row of serviceEntries(); track row.name) {
+              <li>
+                <span class="svc-list__name">{{ row.name }}</span>
+                <span
+                  class="badge badge--sm"
+                  [class.badge--ok]="row.h.status === 'ok'"
+                  [class.badge--fail]="row.h.status === 'fail'"
+                  [class.badge--pending]="row.h.status === 'pending'"
+                >
+                  {{ row.h.status }}
+                </span>
+                @if (row.h.error) {
+                  <span class="svc-list__detail">{{ row.h.error }}</span>
+                }
+              </li>
+            }
+          </ul>
+        }
+
+        <button
+          type="button"
+          class="btn secondary btn--sm"
+          (click)="open(env.gatewayOrigin + '/health/aggregate')"
+        >
+          Ouvrir le JSON brut
+        </button>
+      </article>
+    </div>
+  </section>
+
+  <section class="cards">
+    <article class="card primary">
+      <h2>AdminJS (PostgreSQL + Mongo optionnel)</h2>
+      <p>
+        Back-office sur le port 3010 — nécessite Postgres à jour (PK sur <code>vendors</code>) et
+        <code>npm run start:admin</code>.
+      </p>
+      <a class="btn" [href]="env.adminJsUrl" target="_blank" rel="noopener">Ouvrir AdminJS</a>
+      <p class="hint">{{ env.adminJsUrl }}</p>
+    </article>
+
+    <article class="card">
+      <h2>Documentation</h2>
+      <p>Runbook : gouvernance vendeurs, secrets, Mongo lecture seule.</p>
+      <button type="button" class="btn secondary" (click)="open(env.adminRunbookUrl)">
+        ADMIN_RUNBOOK
+      </button>
+    </article>
+  </section>
+
+  <footer class="foot">
+    <p>
+      Développement : gateway, Postgres, services, puis
+      <code>admin-service</code>. Compte <code>role=admin</code> pour AdminJS. L'app Angular et
+      AdminJS peuvent coexister : cette page pour la supervision, AdminJS pour le CRUD ; plus
+      tard un reverse proxy peut servir les deux sous le même domaine.
+    </p>
+  </footer>
+</div>
